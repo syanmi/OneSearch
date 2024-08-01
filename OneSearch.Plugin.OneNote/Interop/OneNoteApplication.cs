@@ -13,13 +13,13 @@ namespace OneSearch.Plugin.OneNote.Interop
 {
     class OneNoteApplication
     {
-        private Application _interopApplication = new Application();
+        public Application _interopApplication = new Application();
 
         public Notebooks GetNotebooks()
         {
             // XXX: Figure out how to deal with performance implictions of this.
             // Maybe make this a paramater.
-            return XMLDeserialize<Notebooks>(GetHierarchy("", HierarchyScope.hsNotebooks));
+            return XMLDeserialize<Notebooks>(GetHierarchy("", HierarchyScope.hsPages));
         }
 
         public string GetHierarchy(string root, HierarchyScope hsScope)
@@ -27,6 +27,13 @@ namespace OneSearch.Plugin.OneNote.Interop
             string output;
             _interopApplication.GetHierarchy(root, hsScope, out output);
             return output;
+        }
+
+        public Page GetPageContent(string PageId)
+        {
+            string pageContent;
+            _interopApplication.GetPageContent(PageId, out pageContent);
+            return XMLDeserialize<Page>(pageContent);
         }
 
         public static T XMLDeserialize<T>(string input)
