@@ -17,8 +17,6 @@ namespace OneSearch.Plugin.OneNote.Interop
 
         public Notebooks GetNotebooks()
         {
-            // XXX: Figure out how to deal with performance implictions of this.
-            // Maybe make this a paramater.
             return XMLDeserialize<Notebooks>(GetHierarchy("", HierarchyScope.hsPages));
         }
 

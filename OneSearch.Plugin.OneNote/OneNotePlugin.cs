@@ -1,7 +1,9 @@
-﻿using OneNotePageSearcher;
+﻿using HtmlAgilityPack;
+using OneNotePageSearcher;
 using OneSearch.Plugin.OneNote.Interop;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,6 +26,9 @@ namespace OneSearch.Plugin.OneNote
 
             var outlines = content.Items.Where(x => x is Outline).Cast<Outline>();
 
+            var sw = new Stopwatch();
+            sw.Start();
+
             var contents = string.Empty;
             foreach(var outline in outlines)
             {
@@ -33,7 +38,10 @@ namespace OneSearch.Plugin.OneNote
                 }
             }
 
+            sw.Stop();
+
             Console.WriteLine(contents);
+            Console.WriteLine("elapsed : " + sw.ElapsedMilliseconds + " ms");
 
             var man = new OneNoteManager(false);
             var content2 = man.IndexByDocument2(app._interopApplication, "{856A3B3D-8FE0-4DAB-AC7D-3CBE9E97634E}{1}{E19553127889834409498820176487684344330369831}");
@@ -56,7 +64,7 @@ namespace OneSearch.Plugin.OneNote
                 var texts = te.Items.Where(x => x is TextRange).Cast<TextRange>().Select(x => x.Value);
 
 
-                var newTexts = texts.Select(x => RemoveHtmlTags2(x));
+                var newTexts = texts.Select(x => RemoveHtmlTags(x));
 
                 foreach(var text in newTexts)
                 {
@@ -81,12 +89,41 @@ namespace OneSearch.Plugin.OneNote
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
 
-            XmlDocument doc = new XmlDocument();
-            input2 = FixHtmlAttributes(input);
-            doc.LoadXml($"<root>{input2}</root>");
+            input = input.Replace("&nbsp;", " ");
+            var document = new HtmlDocument();
+            document.LoadHtml(input);
 
-            return ExtractText(doc);
-            return ExtractText(doc);
+            var acceptableTags = new String[] { };
+            try
+            {
+                var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
+                while (nodes.Count > 0)
+                {
+                    var node = nodes.Dequeue();
+                    var parentNode = node.ParentNode;
+
+                    if (acceptableTags.Contains(node.Name) || node.Name == "#text") continue;
+                    var childNodes = node.SelectNodes("./*|./text()");
+
+                    if (childNodes != null)
+                    {
+                        foreach (var child in childNodes)
+                        {
+                            nodes.Enqueue(child);
+                            parentNode.InsertBefore(child, node);
+                        }
+                    }
+
+                    parentNode.RemoveChild(node);
+                }
+
+                return System.Net.WebUtility.HtmlDecode(document.DocumentNode.InnerHtml);
+            }
+            // Some text is unable to be parsed by htmlpack
+            catch (ArgumentNullException)
+            {
+                return input;
+            }
         }
         static string FixHtmlAttributes(string html)
         {
@@ -119,14 +156,6 @@ namespace OneSearch.Plugin.OneNote
         {
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
-
-            //// 改行と不完全な属性値を修正
-            //input = Regex.Replace(input, @"(?<=<[^>]*?)\r\n", "");
-
-            //// HTMLタグを削除
-            //return Regex.Replace(input, "<.*?>", string.Empty);
-
-            
 
             // (?s)フラグを使用して改行を含む任意の文字列にマッチさせる
             string pattern = "(?s)<.*?>";
