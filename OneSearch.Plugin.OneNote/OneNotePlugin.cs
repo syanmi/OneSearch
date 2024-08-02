@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using OneNotePageSearcher;
+using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote.Interop;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,17 @@ using System.Xml;
 
 namespace OneSearch.Plugin.OneNote
 {
+    public static class OneNotePluginExtensions
+    {
+        static void AddOneNotePlugin(this IServiceCollection collection)
+        {
+
+        }
+    }
+
     public class OneNotePlugin
     {
+
         public void Execute()
         {
 

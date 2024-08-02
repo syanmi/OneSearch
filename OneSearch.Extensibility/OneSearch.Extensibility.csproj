@@ -41,11 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Services\IServiceCollectionExtensions.cs" />
+    <Compile Include="Core\Services\IServiceProvider.cs" />
+    <Compile Include="Core\Services\ServiceLifeTime.cs" />
+    <Compile Include="Core\Services\SimpleServiceDescriptor.cs" />
+    <Compile Include="Core\Services\SimpleServiceProvider.cs" />
+    <Compile Include="Plugins\ISearchPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Services\IServiceCollection.cs" />
+    <Compile Include="Core\Services\SimpleServiceCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="Plugins\" />
+    <Folder Include="Core\Setting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

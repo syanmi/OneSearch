@@ -29,6 +29,7 @@ namespace OneSearch.Plugin.OneNote.Interop
 
         public Page GetPageContent(string PageId)
         {
+            var no = new Interop.NoteBook();
             string pageContent;
             _interopApplication.GetPageContent(PageId, out pageContent);
             return XMLDeserialize<Page>(pageContent);

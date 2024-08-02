@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interop\NoteBook.cs" />
     <Compile Include="Interop\OneNoteApplication.cs" />
     <Compile Include="Interop\OneNoteManager.cs" />
     <Compile Include="OneNotePlugin.cs" />
@@ -67,6 +68,7 @@
   <ItemGroup>
     <Folder Include="Controls\" />
     <Folder Include="Forms\" />
+    <Folder Include="Search\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">
