@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using OneNotePageSearcher;
+using OneSearch.Extensibility.Core.Log;
 using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote.Interop;
 using System;
@@ -22,6 +23,12 @@ namespace OneSearch.Plugin.OneNote
 
     public class OneNotePlugin
     {
+        private ITraceLogger _logger;
+
+        public OneNotePlugin(ITraceLogger logger)
+        {
+            _logger = logger;
+        }
 
         public void Execute()
         {
@@ -61,6 +68,7 @@ namespace OneSearch.Plugin.OneNote
                 Console.WriteLine(noteBook.name);
             }
 
+            _logger.Log(TraceLogLevel.Debug, "aaaaaaaaaa");
 
         }
 
