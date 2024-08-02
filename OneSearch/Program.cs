@@ -43,7 +43,8 @@ namespace OneSearch
         private static void AddOneSearch(this IServiceCollection services)
         {
             services.Add(typeof(ITraceLogger<>), typeof(SimpleTraceLogger<>), ServiceLifeTime.Singleton);
-            services.AddSingleton<ITraceLoggerFactory>();
+            services.Add(typeof(ITraceLoggerFactory), typeof(TraceLoggerFactory), ServiceLifeTime.Singleton);
+            // services.AddSingleton<ITraceLoggerFactory>();
         }
     }
 }

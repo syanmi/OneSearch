@@ -24,10 +24,12 @@ namespace OneSearch.Plugin.OneNote
     public class OneNotePlugin
     {
         private ITraceLogger<OneNotePlugin> _logger;
+        private ITraceLogger _log2;
 
-        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger)
+        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact)
         {
             _logger = logger;
+            _log2 = fact.CreateLogger("TEST");
         }
 
         public void Execute()
@@ -69,6 +71,7 @@ namespace OneSearch.Plugin.OneNote
             }
 
             _logger.Log(TraceLogLevel.Debug, "aaaaaaaaaa");
+            _log2.Log(TraceLogLevel.Debug, "ADSDASD");
 
         }
 
