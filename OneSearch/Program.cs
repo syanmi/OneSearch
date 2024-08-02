@@ -23,9 +23,6 @@ namespace OneSearch
             var plugin = provider.GetService<OneNotePlugin>();
             plugin.Execute();
 
-            //var plugin = new OneNotePlugin();
-            //plugin.Execute();
-
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
