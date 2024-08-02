@@ -8,16 +8,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace OneSearch.Plugin.OneNote
 {
     public static class OneNotePluginExtensions
     {
-        static void AddOneNotePlugin(this IServiceCollection collection)
+        public static void AddOneNotePlugin(this IServiceCollection collection)
         {
-
+            collection.AddSingleton<OneNotePlugin>();
         }
     }
 

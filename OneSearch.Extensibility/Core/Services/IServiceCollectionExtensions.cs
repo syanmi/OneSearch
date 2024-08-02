@@ -2,7 +2,7 @@
 
 namespace OneSearch.Extensibility.Core.Services
 {
-    static class IServiceCollectionExtensions
+    public static class IServiceCollectionExtensions
     {
         public static void AddSingleton<T>(this IServiceCollection collection) where T : class
             => collection.Add<T>(null, ServiceLifeTime.Singleton);

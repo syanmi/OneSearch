@@ -1,4 +1,5 @@
-﻿using OneSearch.Plugin.OneNote;
+﻿using OneSearch.Extensibility.Core.Services;
+using OneSearch.Plugin.OneNote;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,19 +16,29 @@ namespace OneSearch
         [STAThread]
         static void Main()
         {
+            var services = new SimpleServiceCollection();
+            Configure(services);
 
-
-            var plugin = new OneNotePlugin();
-
+            var provider = services.BuildServiceProvider();
+            var plugin = provider.GetService<OneNotePlugin>();
             plugin.Execute();
+
+            //var plugin = new OneNotePlugin();
+            //plugin.Execute();
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
+            Console.WriteLine("finished.");
             while (true)
             {
                 ;
             }
+        }
+
+        private static void Configure(IServiceCollection services)
+        {
+            services.AddOneNotePlugin();
         }
     }
 }
