@@ -19,7 +19,19 @@ namespace OneSearch.Extensibility.Core.Services
 
         public object GetService(Type type)
         {
-            var descriptor = _descriptor.FirstOrDefault(x => x.Type == type);
+            var descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == type);
+
+            if (descriptor == null && type.IsGenericType)
+            {
+                var genType = type.GetGenericTypeDefinition();
+                descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == genType);
+
+                var genericArg = type.GetGenericArguments()[0];
+                var newType = descriptor.ImplementationType.MakeGenericType(genericArg);
+
+                return GetSingletonService(new SimpleServiceDescriptor(descriptor.ServiceType, newType, ServiceLifeTime.Singleton));
+            }
+
 
             switch (descriptor.LifeTime)
             {
@@ -31,13 +43,13 @@ namespace OneSearch.Extensibility.Core.Services
 
         private object GetSingletonService(SimpleServiceDescriptor descriptor)
         {
-            if (_instance.TryGetValue(descriptor.Type, out var instance))
+            if (_instance.TryGetValue(descriptor.ServiceType, out var instance))
             {
                 return instance;
             }
 
             var second = CreateInstance(descriptor);
-            _instance.Add(descriptor.Type, second);
+            _instance.Add(descriptor.ServiceType, second);
 
             return second;
         }
@@ -49,7 +61,7 @@ namespace OneSearch.Extensibility.Core.Services
                 return descriptor.Factory(this);
             }
 
-            return ConstructService(descriptor.Type);
+            return ConstructService(descriptor.ImplementationType);
         }
 
         private object ConstructService(Type type)

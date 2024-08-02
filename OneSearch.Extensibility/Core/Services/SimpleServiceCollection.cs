@@ -12,9 +12,9 @@ namespace OneSearch.Extensibility.Core.Services
             _descriptor = new List<SimpleServiceDescriptor>();
         }
 
-        public void Add(Type type, ServiceLifeTime lifeTime)
+        public void Add(Type serviceType, Type implementationType, ServiceLifeTime lifeTime)
         {
-            _descriptor.Add(new SimpleServiceDescriptor(type, null, lifeTime));
+            _descriptor.Add(new SimpleServiceDescriptor(serviceType, implementationType, lifeTime));
         }
 
         public void Add<T>(Func<IServiceProvider, T> factory, ServiceLifeTime lifeTime) where T : class

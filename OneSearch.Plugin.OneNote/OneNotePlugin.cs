@@ -23,9 +23,9 @@ namespace OneSearch.Plugin.OneNote
 
     public class OneNotePlugin
     {
-        private ITraceLogger _logger;
+        private ITraceLogger<OneNotePlugin> _logger;
 
-        public OneNotePlugin(ITraceLogger logger)
+        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger)
         {
             _logger = logger;
         }

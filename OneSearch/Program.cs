@@ -36,12 +36,13 @@ namespace OneSearch
 
         private static void Configure(IServiceCollection services)
         {
+            services.AddOneSearch();
             services.AddOneNotePlugin();
         }
 
         private static void AddOneSearch(this IServiceCollection services)
         {
-            services.Add(typeof(ITraceLogger), ServiceLifeTime.Singleton);
+            services.Add(typeof(ITraceLogger<>), typeof(SimpleTraceLogger<>), ServiceLifeTime.Singleton);
             services.AddSingleton<ITraceLoggerFactory>();
         }
     }
