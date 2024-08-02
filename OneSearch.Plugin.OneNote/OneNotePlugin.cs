@@ -57,8 +57,10 @@ namespace OneSearch.Plugin.OneNote
 
             foreach (var noteBook in books.Notebook)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(noteBook.name);
             }
+
 
         }
 

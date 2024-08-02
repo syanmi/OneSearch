@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Log\ITraceLogger.cs" />
+    <Compile Include="Core\Log\ITraceLoggerFactory.cs" />
+    <Compile Include="Core\Log\SimpleTraceLogger.cs" />
+    <Compile Include="Core\Log\TraceLoggerBase.cs" />
+    <Compile Include="Core\Log\TraceLoggerFactory.cs" />
+    <Compile Include="Core\Log\TraceLogLevel.cs" />
     <Compile Include="Core\Services\IServiceCollectionExtensions.cs" />
     <Compile Include="Core\Services\IServiceProvider.cs" />
     <Compile Include="Core\Services\ServiceLifeTime.cs" />
@@ -52,7 +59,6 @@
     <Compile Include="Core\Services\SimpleServiceCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Log\" />
     <Folder Include="Core\Setting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,5 @@
-﻿using OneSearch.Extensibility.Core.Services;
+﻿using OneSearch.Extensibility.Core.Log;
+using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,12 @@ namespace OneSearch
         private static void Configure(IServiceCollection services)
         {
             services.AddOneNotePlugin();
+        }
+
+        private static void AddOneSearch(this IServiceCollection services)
+        {
+            services.Add(typeof(ITraceLogger), ServiceLifeTime.Singleton);
+            services.AddSingleton<ITraceLoggerFactory>();
         }
     }
 }
