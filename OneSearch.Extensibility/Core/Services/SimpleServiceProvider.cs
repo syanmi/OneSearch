@@ -19,49 +19,62 @@ namespace OneSearch.Extensibility.Core.Services
 
         public object GetService(Type type)
         {
-            var descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == type);
-
-            if (descriptor == null && type.IsGenericType)
+            Type serviceType;
+            Type implementType;
+            Func<IServiceProvider, object> factory;
+            ServiceLifeTime lifeTime;
+            if (type.IsGenericType)
             {
                 var genType = type.GetGenericTypeDefinition();
-                descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == genType);
+                var descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == genType);
 
                 var genericArg = type.GetGenericArguments()[0];
                 var newType = descriptor.ImplementationType.MakeGenericType(genericArg);
 
-                return GetSingletonService(new SimpleServiceDescriptor(descriptor.ServiceType, newType, ServiceLifeTime.Singleton));
+                serviceType = type;
+                implementType = descriptor.ImplementationType.MakeGenericType(genericArg);
+                factory = descriptor.Factory;
+                lifeTime = descriptor.LifeTime;
+            }
+            else
+            {
+                var descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == type);
+                serviceType = descriptor.ServiceType;
+                implementType = descriptor.ImplementationType;
+                factory = descriptor.Factory;
+                lifeTime = descriptor.LifeTime;
             }
 
 
-            switch (descriptor.LifeTime)
+            switch (lifeTime)
             {
-                case ServiceLifeTime.Singleton: return GetSingletonService(descriptor);
-                case ServiceLifeTime.Transient: return CreateInstance(descriptor);
+                case ServiceLifeTime.Singleton: return GetSingletonService(serviceType, implementType, factory);
+                case ServiceLifeTime.Transient: return CreateInstance(implementType, factory);
                 default: return null;
             }
         }
 
-        private object GetSingletonService(SimpleServiceDescriptor descriptor)
+        private object GetSingletonService(Type serviceType, Type implementType, Func<IServiceProvider, object> factory)
         {
-            if (_instance.TryGetValue(descriptor.ServiceType, out var instance))
+            if (_instance.TryGetValue(serviceType, out var instance))
             {
                 return instance;
             }
 
-            var second = CreateInstance(descriptor);
-            _instance.Add(descriptor.ServiceType, second);
+            var second = CreateInstance(implementType, factory);
+            _instance.Add(serviceType, second);
 
             return second;
         }
 
-        private object CreateInstance(SimpleServiceDescriptor descriptor)
+        private object CreateInstance(Type implementType, Func<IServiceProvider, object> factory)
         {
-            if(descriptor.Factory != null)
+            if(factory != null)
             {
-                return descriptor.Factory(this);
+                return factory(this);
             }
 
-            return ConstructService(descriptor.ImplementationType);
+            return ConstructService(implementType);
         }
 
         private object ConstructService(Type type)
