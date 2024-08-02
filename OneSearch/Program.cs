@@ -44,7 +44,6 @@ namespace OneSearch
         {
             services.Add(typeof(ITraceLogger<>), typeof(SimpleTraceLogger<>), ServiceLifeTime.Singleton);
             services.Add(typeof(ITraceLoggerFactory), typeof(TraceLoggerFactory), ServiceLifeTime.Singleton);
-            // services.AddSingleton<ITraceLoggerFactory>();
         }
     }
 }
