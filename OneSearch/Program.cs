@@ -39,9 +39,6 @@ namespace OneSearch
             Configure(services);
             var provider = services.BuildServiceProvider();
 
-            var setting = provider.GetService<AppSettingSectionA>();
-            Console.WriteLine(setting.Name);
-            
             var plugin = provider.GetService<IOneNotePlugin>();
             plugin.Execute();
 

@@ -16,7 +16,11 @@ namespace OneSearch.Extensibility.Core.Data
 
         public new static AppSettings Load(string path) 
         {
-            return new AppSettings(path);
+            var settings = new AppSettings(path);
+
+            settings.Load();
+
+            return settings;
         }
     }
 

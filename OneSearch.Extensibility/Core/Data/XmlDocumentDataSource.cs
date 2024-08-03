@@ -67,7 +67,7 @@ namespace OneSearch.Extensibility.Core.Data
             _file.Save(_path);
         }
 
-        private void Load()
+        protected void Load()
         {
             if (File.Exists(_path))
             {
