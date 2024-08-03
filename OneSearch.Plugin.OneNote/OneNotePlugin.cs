@@ -20,7 +20,7 @@ namespace OneSearch.Plugin.OneNote
         public static void AddOneNotePlugin(this IServiceCollection collection)
         {
             collection.AddSingleton<IOneNotePlugin, OneNotePlugin>();
-            collection.MapDataSrouce<AppSettings, OneNotePluginSettings>();
+            collection.AddDataSection<AppSettings, OneNotePluginSettings>();
         }
     }
 
@@ -28,9 +28,10 @@ namespace OneSearch.Plugin.OneNote
     {
         private ITraceLogger<OneNotePlugin> _logger;
         private ITraceLogger _log2;
-        private OneNotePluginSettings _option;
+        private IDataSection<OneNotePluginSettings> _option;
 
-        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, OneNotePluginSettings option)
+        // public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
+        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         {
             _logger = logger;
             _log2 = fact.CreateLogger("TEST");
@@ -77,6 +78,11 @@ namespace OneSearch.Plugin.OneNote
 
             _logger.Log(TraceLogLevel.Debug, "aaaaaaaaaa");
             _log2.Log(TraceLogLevel.Debug, "ADSDASD");
+
+
+            _logger.Log(TraceLogLevel.Debug, _option.Value.Name);
+
+
 
         }
 

@@ -25,14 +25,18 @@ namespace OneSearch.Extensibility.Core.Services
             ServiceLifeTime lifeTime;
             if (type.IsGenericType)
             {
+                // GenericTypeDefinition(ジェネリック型定義)は一致する
                 var genType = type.GetGenericTypeDefinition();
-                var descriptor = _descriptor.FirstOrDefault(x => x.ServiceType == genType);
+                var descriptor = _descriptor.Where(x => x.ServiceType.IsGenericType).FirstOrDefault(x => x.ServiceType.GetGenericTypeDefinition() == genType);
 
+                // ServiceTypeは全て型一致しているときもあれば、していない時もある。
+                // typeは生成したい型。genericパラメータが残っている場合は埋める必要がある。
+                var GenericIsExists = descriptor.ImplementationType.GetGenericArguments().Any(x => x.IsGenericParameter);
                 var genericArg = type.GetGenericArguments()[0];
-                var newType = descriptor.ImplementationType.MakeGenericType(genericArg);
+                var newType = GenericIsExists ? descriptor.ImplementationType.MakeGenericType(genericArg) : type;
 
                 serviceType = type;
-                implementType = descriptor.ImplementationType.MakeGenericType(genericArg);
+                implementType = newType;
                 factory = descriptor.Factory;
                 lifeTime = descriptor.LifeTime;
             }

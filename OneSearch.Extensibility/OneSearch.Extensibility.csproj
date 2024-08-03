@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Data\AppSettings.cs" />
+    <Compile Include="Core\Data\DataSection.cs" />
+    <Compile Include="Core\Data\IDataSection.cs" />
     <Compile Include="Core\Data\IDataSource.cs" />
     <Compile Include="Core\Data\IDataSourceFactory.cs" />
     <Compile Include="Core\Data\IReadOnlyDataSource.cs" />
