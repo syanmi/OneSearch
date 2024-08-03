@@ -102,7 +102,7 @@ namespace OneSearch
 
     public static class TestExtensions
     {
-        public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IDataSource where TSection : class, new()
+        public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IReadOnlyDataSource where TSection : class, new()
         {
             services.Add<TSection>((provider) => 
             {

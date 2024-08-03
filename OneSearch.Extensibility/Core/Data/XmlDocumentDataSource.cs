@@ -8,7 +8,7 @@ namespace OneSearch.Extensibility.Core.Data
         private XmlDocument _file;
         private string _path;
 
-        private XmlDocumentDataSource(string path)
+        protected XmlDocumentDataSource(string path)
         {
             _file = new XmlDocument();
             _path = path;

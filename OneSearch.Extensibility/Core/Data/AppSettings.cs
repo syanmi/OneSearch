@@ -1,38 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneSearch.Extensibility.Core.Data
 {
-    public class AppSettings : IDataSource
+    public class AppSettings : XmlDocumentDataSource
     {
-        private string _path;
-
-        public AppSettings()
+        private AppSettings(string path) : base(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
         {
-            _path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
 
-        public T GetSection<T>() where T : new()
+        public AppSettingSectionA SectionA
         {
-            if(typeof(T) == typeof(AppSettingSectionA))
-            {
-                return (T)(object)new AppSettingSectionA();
-            }
-
-            return default;
+            get => GetSection<AppSettingSectionA>();
+            set => SetSection(value);
         }
 
-        public void Save()
+        public new static AppSettings Load(string path) 
         {
-            throw new NotImplementedException();
-        }
-
-        public void SetSection<T>(T section) where T : new()
-        {
-            throw new NotImplementedException();
+            return new AppSettings(path);
         }
     }
 
