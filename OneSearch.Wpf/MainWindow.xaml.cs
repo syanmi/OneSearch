@@ -4,6 +4,7 @@ using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,8 +33,12 @@ namespace OneSearch.Wpf
             Configure(services);
             var provider = services.BuildServiceProvider();
 
+            var sw = new Stopwatch();
+            sw.Start();
             var plugin = provider.GetService<IOneNotePlugin>();
             plugin.Execute();
+            sw.Stop();
+            Console.WriteLine("ElapsedTime : " + sw.ElapsedMilliseconds + " ms");
 
             Console.WriteLine("finished.");
             while (true)

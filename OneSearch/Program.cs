@@ -3,6 +3,7 @@ using OneSearch.Extensibility.Core.Log;
 using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote;
 using System;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace OneSearch
@@ -39,8 +40,12 @@ namespace OneSearch
             Configure(services);
             var provider = services.BuildServiceProvider();
 
+            var sw = new Stopwatch();
+            sw.Start();
             var plugin = provider.GetService<IOneNotePlugin>();
             plugin.Execute();
+            sw.Stop();
+            Console.WriteLine("ElapsedTime : " + sw.ElapsedMilliseconds + " ms");
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
