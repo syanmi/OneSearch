@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -18,16 +17,13 @@ namespace OneSearch.Extensibility.Core.Data
 
         public T GetSection<T>() where T : new()
         {
-            string filePath = _path;
-
-            if (!File.Exists(filePath))
+            if (!File.Exists(_path))
             {
                 return new T();
             }
 
             string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
             XmlNode node = _file.DocumentElement.SelectSingleNode(elementName);
-
 
             if (node != null)
             {
@@ -36,14 +32,12 @@ namespace OneSearch.Extensibility.Core.Data
             }
             else
             {
-                return new T(); // 要素が存在しない場合、新しいインスタンスを返す
+                return new T();
             }
         }
 
         public void SetSection<T>(T section)
         {
-            string filePath = _path;
-
             if (_file.DocumentElement == null)
             {
                 XmlElement root = _file.CreateElement("Root");
@@ -66,8 +60,6 @@ namespace OneSearch.Extensibility.Core.Data
             {
                 _file.DocumentElement.AppendChild(_file.ImportNode(newNode, true));
             }
-
-            Console.WriteLine($"XML saved successfully for {typeof(T).Name}.");
         }
 
         public void Save()
