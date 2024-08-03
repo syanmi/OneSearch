@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace OneSearch.Extensibility.Core.Data
 {
@@ -22,7 +21,7 @@ namespace OneSearch.Extensibility.Core.Data
                 return new T();
             }
 
-            string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
+            string elementName = XmlHelper.GetElementName<T>();
             XmlNode node = _file.DocumentElement.SelectSingleNode(elementName);
 
             if (node != null)
@@ -44,7 +43,7 @@ namespace OneSearch.Extensibility.Core.Data
                 _file.AppendChild(root);
             }
 
-            string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
+            string elementName = XmlHelper.GetElementName<T>();
             string xmlString = XmlHelper.XMLSerialize(section);
 
             XmlDocument tempDoc = new XmlDocument();

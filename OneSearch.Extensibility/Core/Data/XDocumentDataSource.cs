@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Xml;
+﻿using System.IO;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace OneSearch.Extensibility.Core.Data
 {
@@ -26,7 +23,7 @@ namespace OneSearch.Extensibility.Core.Data
 
             _file = _file ?? XDocument.Load(_path);
 
-            string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
+            string elementName = XmlHelper.GetElementName<T>();
             XElement element = _file.Root.Element(elementName);
 
             if (element != null)
@@ -48,7 +45,7 @@ namespace OneSearch.Extensibility.Core.Data
                     new XDocument(new XElement("Root"));
             }
 
-            string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
+            string elementName = XmlHelper.GetElementName<T>();
             string xmlString = XmlHelper.XMLSerialize(section);
 
             XElement newElement = XElement.Parse(xmlString);
