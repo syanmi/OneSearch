@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\OneNotePluginDataCache.cs" />
     <Compile Include="Interop\NoteBook.cs" />
     <Compile Include="Interop\OneNoteApplication.cs" />
     <Compile Include="Interop\OneNoteManager.cs" />
