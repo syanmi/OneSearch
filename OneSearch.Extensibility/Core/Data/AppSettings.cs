@@ -4,7 +4,7 @@ namespace OneSearch.Extensibility.Core.Data
 {
     public class AppSettings : XmlDocumentDataSource
     {
-        private AppSettings(string path) : base(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
+        private AppSettings(string path) : base(path)
         {
         }
 

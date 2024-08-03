@@ -39,35 +39,8 @@ namespace OneSearch
         [STAThread]
         static void Main()
         {
-
-            // var source = XmlDocumentDataSource.Load(@"E:\repository\test.xml");
-            var source = XDocumentDataSource.Load(@"E:\repository\test.xml");
-#if false
-            var elm = source.GetSection<MyElement>();
-            var elm2 = source.GetSection<MyElementA>();
-#else
-            var elm = new MyElement();
-            elm.Name = "12";
-            elm.Value = "34";
-            source.SetSection(elm);
-
-            var elmA = new MyElementA();
-            elmA.Name = "5dd6";
-            elmA.Value = "7dd8";
-            source.SetSection(elmA);
-            source.Save();
-#endif
-
-            while (true) { }
-
-
             var services = new SimpleServiceCollection();
             Configure(services);
-
-            // 直接データでinjectionされたいものは以下のようにとる
-            services.MapDataSrouce<AppSettings, AppSettingSectionA>();
-
-
             var provider = services.BuildServiceProvider();
 
             var setting = provider.GetService<AppSettingSectionA>();
@@ -96,7 +69,9 @@ namespace OneSearch
         {
             services.Add(typeof(ITraceLogger<>), typeof(SimpleTraceLogger<>), ServiceLifeTime.Singleton);
             services.Add(typeof(ITraceLoggerFactory), typeof(TraceLoggerFactory), ServiceLifeTime.Singleton);
-            services.Add(typeof(AppSettings), typeof(AppSettings), ServiceLifeTime.Singleton);
+
+            services.Add<AppSettings>((provider) => (AppSettings.Load(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))), ServiceLifeTime.Singleton);
+            services.MapDataSrouce<AppSettings, AppSettingSectionA>();
         }
     }
 
@@ -104,7 +79,7 @@ namespace OneSearch
     {
         public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IReadOnlyDataSource where TSection : class, new()
         {
-            services.Add<TSection>((provider) => 
+            services.Add((provider) => 
             {
                 var source = provider.GetService<TSource>();
                 return source.GetSection<TSection>();
