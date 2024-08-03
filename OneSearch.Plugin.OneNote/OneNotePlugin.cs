@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack;
 using OneNotePageSearcher;
+using OneSearch.Extensibility.Core.Data;
 using OneSearch.Extensibility.Core.Log;
 using OneSearch.Extensibility.Core.Services;
+using OneSearch.Plugin.OneNote.Data;
 using OneSearch.Plugin.OneNote.Interop;
 using System;
 using System.Collections.Generic;
@@ -17,19 +19,22 @@ namespace OneSearch.Plugin.OneNote
     {
         public static void AddOneNotePlugin(this IServiceCollection collection)
         {
-            collection.AddSingleton<OneNotePlugin>();
+            collection.AddSingleton<IOneNotePlugin, OneNotePlugin>();
+            collection.MapDataSrouce<AppSettings, OneNotePluginSettings>();
         }
     }
 
-    public class OneNotePlugin
+    internal class OneNotePlugin : IOneNotePlugin
     {
         private ITraceLogger<OneNotePlugin> _logger;
         private ITraceLogger _log2;
+        private OneNotePluginSettings _option;
 
-        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact)
+        public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, OneNotePluginSettings option)
         {
             _logger = logger;
             _log2 = fact.CreateLogger("TEST");
+            _option = option;
         }
 
         public void Execute()

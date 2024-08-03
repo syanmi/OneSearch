@@ -42,7 +42,7 @@ namespace OneSearch
             var setting = provider.GetService<AppSettingSectionA>();
             Console.WriteLine(setting.Name);
             
-            var plugin = provider.GetService<OneNotePlugin>();
+            var plugin = provider.GetService<IOneNotePlugin>();
             plugin.Execute();
 
             //Application.EnableVisualStyles();

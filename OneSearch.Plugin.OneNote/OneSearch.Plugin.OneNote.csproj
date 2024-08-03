@@ -49,6 +49,7 @@
     <Compile Include="Interop\NoteBook.cs" />
     <Compile Include="Interop\OneNoteApplication.cs" />
     <Compile Include="Interop\OneNoteManager.cs" />
+    <Compile Include="IOneNotePlugin.cs" />
     <Compile Include="OneNotePlugin.cs" />
     <Compile Include="onenote_2013.cs">
       <DependentUpon>onenote_2013.xsd</DependentUpon>
