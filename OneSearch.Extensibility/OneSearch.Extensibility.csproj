@@ -45,7 +45,7 @@
     <Compile Include="Core\Data\AppSettings.cs" />
     <Compile Include="Core\Data\IDataSource.cs" />
     <Compile Include="Core\Data\IDataSourceFactory.cs" />
-    <Compile Include="Core\Data\IFileDataSource.cs" />
+    <Compile Include="Core\Data\IReadOnlyDataSource.cs" />
     <Compile Include="Core\Data\XmlFileDataSource.cs" />
     <Compile Include="Core\Log\ITraceLogger.cs" />
     <Compile Include="Core\Log\ITraceLoggerFactory.cs" />

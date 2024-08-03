@@ -1,8 +1,8 @@
 ﻿
 namespace OneSearch.Extensibility.Core.Data
 {
-    public interface IDataSource
+    public interface IDataSource : IReadOnlyDataSource
     {
-        T GetSection<T>() where T : new();
+        void SetSection<T>(T section) where T : new();
     }
 }

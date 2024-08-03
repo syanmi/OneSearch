@@ -36,7 +36,7 @@ namespace OneSearch.Extensibility.Core.Data
             }
         }
 
-        public void SetSection<T>(T section)
+        public void SetSection<T>(T section) where T : new()
         {
             if (_file.DocumentElement == null)
             {
