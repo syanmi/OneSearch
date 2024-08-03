@@ -57,7 +57,7 @@ namespace OneSearch.Wpf
             services.Add(typeof(ITraceLoggerFactory), typeof(TraceLoggerFactory), ServiceLifeTime.Singleton);
 
             services.Add<AppSettings>((provider) => {
-                AppSettings.Load(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\OneSearch\\app.txt");
+                    return AppSettings.Load(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\OneSearch\\app.txt");
                 }, ServiceLifeTime.Singleton);
             services.MapDataSrouce<AppSettings, AppSettingSectionA>();
         }
