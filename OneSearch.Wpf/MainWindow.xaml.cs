@@ -41,10 +41,10 @@ namespace OneSearch.Wpf
             Console.WriteLine("ElapsedTime : " + sw.ElapsedMilliseconds + " ms");
 
             Console.WriteLine("finished.");
-            while (true)
-            {
-                ;
-            }
+            //while (true)
+            //{
+            //    ;
+            //}
         }
 
         private static void Configure(IServiceCollection services)
