@@ -3,10 +3,6 @@ using OneSearch.Extensibility.Core.Log;
 using OneSearch.Extensibility.Core.Services;
 using OneSearch.Plugin.OneNote;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace OneSearch
@@ -72,19 +68,6 @@ namespace OneSearch
 
             services.Add<AppSettings>((provider) => (AppSettings.Load(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\OneSearch")), ServiceLifeTime.Singleton);
             services.MapDataSrouce<AppSettings, AppSettingSectionA>();
-        }
-    }
-
-    public static class TestExtensions
-    {
-        public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IReadOnlyDataSource where TSection : class, new()
-        {
-            services.Add((provider) => 
-            {
-                var source = provider.GetService<TSource>();
-                return source.GetSection<TSection>();
-            }, ServiceLifeTime.Singleton);
-
         }
     }
 }
