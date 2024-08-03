@@ -82,6 +82,8 @@ namespace OneSearch.Plugin.OneNote
 
             _logger.Log(TraceLogLevel.Debug, _option.Value.Name);
 
+            _option.Value.Name = "newName";
+            _option.Save();
 
 
         }

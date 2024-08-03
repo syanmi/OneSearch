@@ -2,7 +2,7 @@
 
 namespace OneSearch.Plugin.OneNote.Data
 {
-    internal class OneNotePluginSettings
+    public class OneNotePluginSettings
     {
         [XmlElement("Name")]
         public string Name { get; set; }

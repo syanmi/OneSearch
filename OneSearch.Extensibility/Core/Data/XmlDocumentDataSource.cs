@@ -63,6 +63,7 @@ namespace OneSearch.Extensibility.Core.Data
 
         public void Save()
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(_path));
             _file.Save(_path);
         }
 

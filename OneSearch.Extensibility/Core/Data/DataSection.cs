@@ -21,6 +21,7 @@ namespace OneSearch.Extensibility.Core.Data
         public void Save()
         {
             _source.SetSection(_section);
+            _source.Save();
         }
     }
 }
