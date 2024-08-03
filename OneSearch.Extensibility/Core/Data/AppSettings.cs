@@ -15,7 +15,7 @@ namespace OneSearch.Extensibility.Core.Data
             _path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
 
-        public T GetSection<T>()
+        public T GetSection<T>() where T : new()
         {
             if(typeof(T) == typeof(AppSettingSectionA))
             {

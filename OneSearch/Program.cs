@@ -41,8 +41,9 @@ namespace OneSearch
         {
 
             var source = XmlFileDataSource.Load(@"E:\repository\test.xml");
-#if false
+#if true
             var elm = source.GetSection<MyElement>();
+            var elm2 = source.GetSection<MyElementA>();
 #else
             var elm = new MyElement();
             elm.Name = "1212";
@@ -100,7 +101,7 @@ namespace OneSearch
 
     public static class TestExtensions
     {
-        public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IDataSource where TSection : class
+        public static void MapDataSrouce<TSource, TSection>(this IServiceCollection services) where TSource : IDataSource where TSection : class, new()
         {
             services.Add<TSection>((provider) => 
             {

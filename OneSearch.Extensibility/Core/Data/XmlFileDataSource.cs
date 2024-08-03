@@ -16,22 +16,30 @@ namespace OneSearch.Extensibility.Core.Data
             _path = path;
         }
 
-        public T GetSection<T>()
+        public T GetSection<T>() where T : new()
         {
-            if(_file.BaseURI != _path)
+            string filePath = _path;
+            XmlDocument doc = new XmlDocument();
+
+            if (!System.IO.File.Exists(filePath))
             {
-                _file.Load(_path);
+                return new T(); // ファイルが存在しない場合、新しいインスタンスを返す
             }
 
-            XmlNode node = _file.DocumentElement;
+            doc.Load(filePath);
+
+            string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
+            XmlNode node = doc.DocumentElement.SelectSingleNode(elementName);
+
             if (node != null)
             {
                 string nodeString = node.OuterXml;
-                var myElement = XMLDeserialize<T>(nodeString);
-                return myElement;
+                return XMLDeserialize<T>(nodeString);
             }
-
-            return default;
+            else
+            {
+                return new T(); // 要素が存在しない場合、新しいインスタンスを返す
+            }
         }
 
         public void SetSection<T>(T section)
@@ -68,22 +76,6 @@ namespace OneSearch.Extensibility.Core.Data
 
             doc.Save(filePath);
             Console.WriteLine($"XML saved successfully for {typeof(T).Name}.");
-        }
-        static void SaveOrUpdateNode(XmlDocument doc, string elementName, string xmlString)
-        {
-            XmlNode existingNode = doc.DocumentElement.SelectSingleNode(elementName);
-            XmlDocument tempDoc = new XmlDocument();
-            tempDoc.LoadXml(xmlString);
-            XmlNode newNode = tempDoc.DocumentElement;
-
-            if (existingNode != null)
-            {
-                doc.DocumentElement.ReplaceChild(doc.ImportNode(newNode, true), existingNode);
-            }
-            else
-            {
-                doc.DocumentElement.AppendChild(doc.ImportNode(newNode, true));
-            }
         }
 
         public void Save()
