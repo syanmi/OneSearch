@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace OneSearch.Extensibility.Core.Data
 {
-    public class XmlFileDataSource : IFileDataSource
+    public class XmlFileDataSource : IDataSource
     {
         private XmlDocument _file;
         private string _path;

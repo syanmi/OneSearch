@@ -24,6 +24,16 @@ namespace OneSearch.Extensibility.Core.Data
 
             return default;
         }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSection<T>(T section) where T : new()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class AppSettingSectionA
