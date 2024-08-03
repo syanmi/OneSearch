@@ -3,11 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:muxc="http://schemas.modernwpf.com/2019"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        Title="MainWindow"
+        Width="1010"
+        Height="700"
         ui:WindowHelper.UseModernWindowStyle="True"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="0,0,2,-1">
-        <ui:NavigationView Margin="0,0,0,0" HorizontalAlignment="Left" Width="790"/>
-    </Grid>
+        ResizeMode="CanResizeWithGrip"
+        mc:Ignorable="d">
+    <muxc:NavigationView>
+        <Grid Margin="5,5,5,5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox DockPanel.Dock="Left" TextWrapping="Wrap" Text="TextBox" Height="30" VerticalAlignment="Top"/>
+
+            <StackPanel HorizontalAlignment="Left" Height="289" Margin="263,44,0,0" VerticalAlignment="Top" Width="100">
+                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </StackPanel>
+        </Grid>
+    </muxc:NavigationView>
 </Window>

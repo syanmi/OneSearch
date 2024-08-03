@@ -7,9 +7,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources />
+                <ui:ThemeResources  RequestedTheme="Dark" AccentColor="Red" />
                 <ui:XamlControlsResources />
                 <!-- Other merged dictionaries here -->
+                <ResourceDictionary Source="C:\Users\Satoshi\Desktop\App\OneSearch\OneSearch.Wpf\Resources/CustomStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
         </ResourceDictionary>
