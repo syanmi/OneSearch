@@ -4,12 +4,12 @@ using System.Xml.Serialization;
 
 namespace OneSearch.Extensibility.Core.Data
 {
-    public class XmlFileDataSource : IDataSource
+    public class XmlDocumentDataSource : IDataSource
     {
         private XmlDocument _file;
         private string _path;
 
-        private XmlFileDataSource(string path)
+        private XmlDocumentDataSource(string path)
         {
             _file = new XmlDocument();
             _path = path;
@@ -28,7 +28,7 @@ namespace OneSearch.Extensibility.Core.Data
             if (node != null)
             {
                 string nodeString = node.OuterXml;
-                return XMLDeserialize<T>(nodeString);
+                return XmlHelper.XMLDeserialize<T>(nodeString);
             }
             else
             {
@@ -45,7 +45,7 @@ namespace OneSearch.Extensibility.Core.Data
             }
 
             string elementName = typeof(T).GetCustomAttributes(typeof(XmlRootAttribute), false) is XmlRootAttribute[] attributes && attributes.Length > 0 ? attributes[0].ElementName : typeof(T).Name;
-            string xmlString = XMLSerialize(section);
+            string xmlString = XmlHelper.XMLSerialize(section);
 
             XmlDocument tempDoc = new XmlDocument();
             tempDoc.LoadXml(xmlString);
@@ -75,28 +75,13 @@ namespace OneSearch.Extensibility.Core.Data
             }
         }
 
-        public static XmlFileDataSource Load(string path)
+        public static XmlDocumentDataSource Load(string path)
         {
-            var source = new XmlFileDataSource(path);
+            var source = new XmlDocumentDataSource(path);
 
             source.Load();
 
             return source;
-        }
-
-        private static string XMLSerialize<T>(T obj)
-        {
-            using (StringWriter stringWriter = new StringWriter())
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(stringWriter, obj);
-                return stringWriter.ToString();
-            }
-        }
-
-        private static T XMLDeserialize<T>(string input)
-        {
-            return (T)new XmlSerializer(typeof(T)).Deserialize(new XmlTextReader(new StringReader(input)));
         }
     }
 }

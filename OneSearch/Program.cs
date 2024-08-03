@@ -40,19 +40,20 @@ namespace OneSearch
         static void Main()
         {
 
-            var source = XmlFileDataSource.Load(@"E:\repository\test.xml");
-#if true
+            // var source = XmlDocumentDataSource.Load(@"E:\repository\test.xml");
+            var source = XDocumentDataSource.Load(@"E:\repository\test.xml");
+#if false
             var elm = source.GetSection<MyElement>();
             var elm2 = source.GetSection<MyElementA>();
 #else
             var elm = new MyElement();
-            elm.Name = "1212";
-            elm.Value = "3434";
+            elm.Name = "12";
+            elm.Value = "34";
             source.SetSection(elm);
 
             var elmA = new MyElementA();
-            elmA.Name = "56";
-            elmA.Value = "78";
+            elmA.Name = "5dd6";
+            elmA.Value = "7dd8";
             source.SetSection(elmA);
             source.Save();
 #endif
