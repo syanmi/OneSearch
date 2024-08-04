@@ -15,15 +15,6 @@ using System.Xml;
 
 namespace OneSearch.Plugin.OneNote
 {
-    public static class OneNotePluginExtensions
-    {
-        public static void AddOneNotePlugin(this IServiceCollection collection)
-        {
-            collection.AddSingleton<IOneNotePlugin, OneNotePlugin>();
-            collection.AddDataSection<AppSettings, OneNotePluginSettings>();
-        }
-    }
-
     internal class OneNotePlugin : IOneNotePlugin
     {
         private ITraceLogger<OneNotePlugin> _logger;
@@ -32,12 +23,21 @@ namespace OneSearch.Plugin.OneNote
 
         public string Name => "OneSearch.OneNotePlugin";
 
-        // public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         {
             _logger = logger;
             _log2 = fact.CreateLogger("TEST");
             _option = option;
+        }
+
+        public void Initialize()
+        {
+            Execute();
+
+
+
+
+
         }
 
         public void Execute()
@@ -199,11 +199,6 @@ namespace OneSearch.Plugin.OneNote
             var text2 = Regex.Replace(input, pattern, string.Empty);
 
             return System.Net.WebUtility.HtmlDecode(text2);
-        }
-
-        public void Initialize()
-        {
-            Execute();
         }
 
         public void Shutdown()

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OneSearch.Extensibility.Core.Data;
 
 namespace OneSearch.Plugin.OneNote.Data
 {
-    class OneNotePluginDataCache
+    class OneNotePluginDataCache : XmlDocumentDataSource
     {
+        public OneNotePluginDataCache(string path) : base(path)
+        {
+        }
     }
 }
