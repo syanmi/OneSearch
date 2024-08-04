@@ -63,7 +63,7 @@
     <Compile Include="Core\Services\ServiceLifeTime.cs" />
     <Compile Include="Core\Services\SimpleServiceDescriptor.cs" />
     <Compile Include="Core\Services\SimpleServiceProvider.cs" />
-    <Compile Include="Plugins\ISearchPlugin.cs" />
+    <Compile Include="Plugins\IOneSearchPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Services\IServiceCollection.cs" />
     <Compile Include="Core\Services\SimpleServiceCollection.cs" />

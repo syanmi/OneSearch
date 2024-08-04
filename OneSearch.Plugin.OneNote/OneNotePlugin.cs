@@ -30,6 +30,8 @@ namespace OneSearch.Plugin.OneNote
         private ITraceLogger _log2;
         private IDataSection<OneNotePluginSettings> _option;
 
+        public string Name => throw new NotImplementedException();
+
         // public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         {
@@ -197,6 +199,16 @@ namespace OneSearch.Plugin.OneNote
             var text2 = Regex.Replace(input, pattern, string.Empty);
 
             return System.Net.WebUtility.HtmlDecode(text2);
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Shutdown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

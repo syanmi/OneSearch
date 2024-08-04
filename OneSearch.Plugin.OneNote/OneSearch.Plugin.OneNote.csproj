@@ -57,12 +57,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OneSearch.Extensibility\OneSearch.Extensibility.csproj">
-      <Project>{5cd4e2c3-7d32-4ed9-b936-e24e1e174ebe}</Project>
-      <Name>OneSearch.Extensibility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="onenote_2013.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -83,6 +77,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OneSearch.Extensibility\OneSearch.Extensibility.csproj">
+      <Project>{5cd4e2c3-7d32-4ed9-b936-e24e1e174ebe}</Project>
+      <Name>OneSearch.Extensibility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
