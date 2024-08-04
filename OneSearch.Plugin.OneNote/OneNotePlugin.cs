@@ -30,7 +30,7 @@ namespace OneSearch.Plugin.OneNote
         private ITraceLogger _log2;
         private IDataSection<OneNotePluginSettings> _option;
 
-        public string Name => throw new NotImplementedException();
+        public string Name => "OneSearch.OneNotePlugin";
 
         // public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
         public OneNotePlugin(ITraceLogger<OneNotePlugin> logger, ITraceLoggerFactory fact, IDataSection<OneNotePluginSettings> option)
@@ -203,12 +203,12 @@ namespace OneSearch.Plugin.OneNote
 
         public void Initialize()
         {
-            throw new NotImplementedException();
+            Execute();
         }
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("OneSearchPlugin.finished");
         }
     }
 }

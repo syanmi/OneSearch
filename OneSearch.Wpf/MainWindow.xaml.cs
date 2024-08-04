@@ -36,7 +36,7 @@ namespace OneSearch.Wpf
             var sw = new Stopwatch();
             sw.Start();
             var plugin = provider.GetService<IOneNotePlugin>();
-            plugin.Execute();
+            plugin.Initialize();
             sw.Stop();
             Console.WriteLine("ElapsedTime : " + sw.ElapsedMilliseconds + " ms");
             Console.WriteLine("finished.");

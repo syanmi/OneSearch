@@ -7,8 +7,6 @@ namespace OneSearch.Extensibility.Plugins
 
         void Initialize();
 
-        void Execute();
-
         void Shutdown();
     }
 }
