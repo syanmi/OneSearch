@@ -3,30 +3,86 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:muxc="http://schemas.modernwpf.com/2019"
-        xmlns:ui="http://schemas.modernwpf.com/2019"
-        Title="MainWindow"
-        Width="1010"
-        Height="700"
-        ui:WindowHelper.UseModernWindowStyle="True"
-        ResizeMode="CanResizeWithGrip"
-        mc:Ignorable="d">
-    <muxc:NavigationView>
-        <Grid Margin="5,5,5,5">
+        xmlns:local="clr-namespace:OneSearch.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
 
+    <Window.Resources>
+        <!-- Style for MenuItem to align with the parent Menu height -->
+        <Style TargetType="MenuItem">
+            <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Menu}}, Path=ActualHeight}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="0"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="5"/>
+    </WindowChrome.WindowChrome>
+
+    <Border Background="White" BorderBrush="Gray" BorderThickness="1">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBox DockPanel.Dock="Left" TextWrapping="Wrap" Text="TextBox" Height="30" VerticalAlignment="Top"/>
+            <!-- Custom Title Bar -->
+            <DockPanel Grid.Row="0" Background="LightGray" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <!-- Title should be on the left -->
+                <Menu Grid.Row="1"  Background="Transparent" Height="{Binding ElementName=TitleBarRow, Path=Height}">
+                    <MenuItem Header="File">
+                        <MenuItem Header="Open"/>
+                        <MenuItem Header="Save"/>
+                        <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+                    </MenuItem>
+                    <MenuItem Header="Edit">
+                        <MenuItem Header="Undo"/>
+                        <MenuItem Header="Redo"/>
+                    </MenuItem>
+                    <MenuItem Header="Help">
+                        <MenuItem Header="About"/>
+                    </MenuItem>
+                </Menu>
+                <!-- Buttons should be on the right -->
+                <Button Content="X" DockPanel.Dock="Right" Click="CloseButton_Click" 
+                    Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right"/>
+                <Button Content="□" DockPanel.Dock="Right" Click="MaximizeButton_Click" 
+                    Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right"/>
+                <Button Content="-" DockPanel.Dock="Right" Click="MinimizeButton_Click" 
+                    Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right"/>
+            </DockPanel>
 
-            <StackPanel HorizontalAlignment="Left" Height="289" Margin="263,44,0,0" VerticalAlignment="Top" Width="100">
-                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <Button Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </StackPanel>
+            <!-- Content Area -->
+            <Grid Grid.Row="1">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Background="LightGray">
+                        <Button Height="20" Background="{x:Null}">A
+                        </Button>
+                        <Button Height="20">B</Button>
+                        <Button Height="20">C</Button>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBox Height="30" TextWrapping="Wrap" Text="TextBox" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <ListBox x:Name="ListBoxResult" Height="388"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
         </Grid>
-    </muxc:NavigationView>
+    </Border>
 </Window>
