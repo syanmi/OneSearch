@@ -39,12 +39,7 @@ namespace OneSearch.Wpf
             plugin.Execute();
             sw.Stop();
             Console.WriteLine("ElapsedTime : " + sw.ElapsedMilliseconds + " ms");
-
             Console.WriteLine("finished.");
-            //while (true)
-            //{
-            //    ;
-            //}
         }
 
         private static void Configure(IServiceCollection services)
