@@ -32,64 +32,13 @@ namespace OneSearch.Plugin.OneNote
 
         public void Initialize()
         {
-            Execute();
 
+            var one = new OneNoteManager(true);
 
-
-
-
-        }
-
-        public void Execute()
-        {
-
-            var app = new OneNoteApplication();
-            var books = app.GetNotebooks();
-            
-
-            var content = app.GetPageContent("{856A3B3D-8FE0-4DAB-AC7D-3CBE9E97634E}{1}{E19553127889834409498820176487684344330369831}");
-
-
-            var outlines = content.Items.Where(x => x is Outline).Cast<Outline>();
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            var contents = string.Empty;
-            foreach(var outline in outlines)
-            {
-                foreach (var child in outline.OEChildren)
-                {
-                    contents += GetText(child);
-                }
-            }
-
-            sw.Stop();
-
-            Console.WriteLine(contents);
-            Console.WriteLine("elapsed : " + sw.ElapsedMilliseconds + " ms");
-
-            var man = new OneNoteManager(false);
-            var content2 = man.IndexByDocument2(app._interopApplication, "{856A3B3D-8FE0-4DAB-AC7D-3CBE9E97634E}{1}{E19553127889834409498820176487684344330369831}");
-
-            foreach (var noteBook in books.Notebook)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(noteBook.name);
-            }
-
-            _logger.Log(TraceLogLevel.Debug, "aaaaaaaaaa");
-            _log2.Log(TraceLogLevel.Debug, "ADSDASD");
-
-
-            _logger.Log(TraceLogLevel.Debug, _option.Value.Name);
-
-            _option.Value.Name = "newName";
-            _option.Save();
-
+            one.setIndexDirectory(@"C:\Users\Satoshi\Desktop\App\index");
+            one.BuildIndex(true, "");
 
         }
-
 
         private string GetText(OEChildren children)
         {
@@ -126,7 +75,7 @@ namespace OneSearch.Plugin.OneNote
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
 
-            input = input.Replace("&nbsp;", " ");
+            input = input.Replace(" & nbsp;", " ");
             var document = new HtmlDocument();
             document.LoadHtml(input);
 

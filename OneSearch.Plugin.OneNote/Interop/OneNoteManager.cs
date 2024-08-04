@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using HtmlAgilityPack;
 using Microsoft.Office.Interop.OneNote;
 using System.IO;
 using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
-using OneSearch.Plugin.OneNote;
 
 namespace OneNotePageSearcher
 {
@@ -15,7 +13,9 @@ namespace OneNotePageSearcher
     {
         private static readonly XNamespace One = "http://schemas.microsoft.com/office/onenote/2013/onenote";
 
-        private Application oneNote = null;
+        private NetLuceneProvider lucene;
+
+        private Application oneNote = new Application();
 
         public double progressRate = 0;
         double count = 0;
@@ -35,6 +35,10 @@ namespace OneNotePageSearcher
         public OneNoteManager(bool isDebug)
         {
             this.isDebug = isDebug;
+            lucene = new NetLuceneProvider(false);
+            lucene.debug = this.isDebug;
+
+            BuildMetaInfo();
         }
 
         private void BuildMetaInfo()
@@ -69,6 +73,7 @@ namespace OneNotePageSearcher
         public void BuildIndex(bool useCache, string indexMode)
         {
             progressRate = 0;
+            lucene.SetWorkingDirectory();
             if (useCache)
             {
                 AddIndexByTime(indexMode);
@@ -77,6 +82,7 @@ namespace OneNotePageSearcher
             {
                 AddAllIndex(indexMode);
             }
+            lucene.CloseWriter();
         }
 
         /// <summary>
@@ -84,14 +90,17 @@ namespace OneNotePageSearcher
         /// </summary>
         private void AddIndexByTime(string indexMode)
         {
+            lucene.SetUpWriter(false);
             GetUpdateIndexID(out HashSet<string> deletedID, out HashSet<string> updateID);
             if (isDebug) Console.WriteLine("Begining Index Process...");
             foreach (var id in deletedID)
             {
                 if (isDebug) Console.WriteLine("Deleting: " + id);
+                lucene.DeleteDocumentByID(id);
             }
             AddIndexFromID(updateID, indexMode);
             var currentTime = String.Format("{0:u}", DateTime.UtcNow);
+            // UserSettings.AddUpdateAppSettings("LastIndexTime", currentTime);
         }
 
         /// <summary>
@@ -99,6 +108,7 @@ namespace OneNotePageSearcher
         /// </summary>
         private void AddAllIndex(string indexMode)
         {
+            lucene.SetUpWriter(true);
             HashSet<String> updateID = new HashSet<string>();
             foreach (var n in pageMetaInfo.Values)
             {
@@ -121,11 +131,13 @@ namespace OneNotePageSearcher
                 foreach (var id in updateID)
                 {
                     //if (isDebug) Console.WriteLine("Adding: " + id);
+                    lucene.DeleteDocumentByID(id);
                     count += 1;
                     progressRate = count / totalCount;
                     try
                     {
-                        IndexByDocument(id);
+                        if (indexMode == GlobalVar.IndexByParagraphMode) IndexByParagraph(id);
+                        else IndexByDocument(id);
                     }
                     catch (System.Runtime.InteropServices.COMException e)
                     {
@@ -159,57 +171,9 @@ namespace OneNotePageSearcher
                     var text = GetTextFromNode(el);
                     if (text == null) continue;
                     var paragraphText = RemoveUnwantedTags(text);
+                    lucene.AddDocument(new Tuple<string, string, string>(pageID, paraID, paragraphText));
                 }
             }
-        }
-
-        public void IndexByParagraph2(Application oneNoteApp, string pageID)
-        {
-            string xmlString;
-            oneNoteApp.GetPageContent(pageID, out xmlString);
-
-            var des = XDocument.Parse(xmlString).Descendants(One + "OE");
-            currentPageTitle = GetPageTitle(pageID);
-            currentNotebookTitle = GetPageNotebookTitle(pageID);
-            if (isDebug) Console.WriteLine("\t" + des.Count() + " Paragraphs");
-
-            if (des.Count() > 0)
-            {
-                foreach (var el in des)
-                {
-                    var paraID = el.Attribute("objectID").Value;
-                    var text = GetTextFromNode(el);
-                    if (text == null) continue;
-                    var paragraphText = RemoveUnwantedTags(text);
-                }
-            }
-        }
-        public Page IndexByDocument2(Application oneNoteApp, string pageID)
-        {
-            string xmlString;
-            oneNoteApp.GetPageContent(pageID, out xmlString);
-            var des = XDocument.Parse(xmlString).Descendants(One + "OE");
-            StringBuilder sb = new StringBuilder("");
-
-            return XMLDeserialize<Page>(xmlString);
-            //foreach (var el in des)
-            //{
-            //    var text = GetTextFromNode(el);
-            //    if (text == null) continue;
-            //    var paragraphText = RemoveUnwantedTags(text);
-            //    if (isDebug)
-            //    {
-            //        using (StreamWriter w = File.AppendText("log.txt"))
-            //        {
-            //            Log(paragraphText, w);
-            //        }
-            //    }
-            //    sb.AppendLine(paragraphText);
-            //}
-        }
-        public static T XMLDeserialize<T>(string input)
-        {
-            return (T)new XmlSerializer(typeof(T)).Deserialize(new XmlTextReader(new StringReader(input)));
         }
 
         /// <summary>
@@ -237,6 +201,7 @@ namespace OneNotePageSearcher
                 }
                 sb.AppendLine(paragraphText);
             }
+            lucene.AddDocument(new Tuple<string, string, string>(pageID, "NULL", sb.ToString()));
         }
 
         private string GetTextFromNode(XElement el)
@@ -258,6 +223,10 @@ namespace OneNotePageSearcher
             return text.ToString();
         }
 
+        public List<SearchResult> Search(string query)
+        {
+            return lucene.Search(query);
+        }
 
         /// <summary>
         /// Send page id(from index), open requested page.
@@ -326,13 +295,39 @@ namespace OneNotePageSearcher
 
         public void GetUpdateIndexID(out HashSet<String> indexIDToDelete, out HashSet<String> indexIDToCreate)
         {
-            indexIDToDelete = null;
-            indexIDToCreate = null;
+            var currentID = GetAllPageId();
+            var legacyID = lucene.GetAllValuesByField("pageID");
+            indexIDToDelete = new HashSet<String>();
+            indexIDToCreate = new HashSet<String>();
+
+            // We want to find page that is already deleted
+            foreach (var id in legacyID)
+            {
+                if (!currentID.Contains(id))
+                {
+                    indexIDToDelete.Add(id);
+                }
+            }
+
+            // We also want to find page that is updated and created
+            // DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss.fffK")
+            // string oldTime = UserSettings.ReadSetting("LastIndexTime") ?? "1978-06-18T08:56:47.000Z";
+            string oldTime = "1978-06-18T08:56:47.000Z";
+            if (isDebug) Console.WriteLine(oldTime);
+            foreach (var n in pageMetaInfo.Values)
+            {
+                // Last Modified Time is after index time
+                if (CompareTimeByString(n.lastModifiedTime, oldTime))
+                {
+                    if (isDebug) Console.WriteLine(n.lastModifiedTime);
+                    indexIDToCreate.Add(n.id);
+                }
+            }
         }
 
         public void setIndexDirectory(string indexDir)
         {
-
+            this.lucene._indexPath = indexDir;
         }
 
         public void Main()
@@ -346,7 +341,45 @@ namespace OneNotePageSearcher
 
         internal static string RemoveUnwantedTags(string data)
         {
-            return data;
+            if (string.IsNullOrEmpty(data)) return string.Empty;
+
+            data = data.Replace("&nbsp;", " ");
+            var document = new HtmlDocument();
+            document.LoadHtml(data);
+
+            var acceptableTags = new String[] { };
+            try
+            {
+                var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
+                while (nodes.Count > 0)
+                {
+                    var node = nodes.Dequeue();
+                    var parentNode = node.ParentNode;
+
+                    if (acceptableTags.Contains(node.Name) || node.Name == "#text") continue;
+                    var childNodes = node.SelectNodes("./*|./text()");
+
+                    if (childNodes != null)
+                    {
+                        foreach (var child in childNodes)
+                        {
+                            nodes.Enqueue(child);
+                            parentNode.InsertBefore(child, node);
+                        }
+                    }
+
+                    parentNode.RemoveChild(node);
+                }
+
+                return document.DocumentNode.InnerHtml;
+            }
+            // Some text is unable to be parsed by htmlpack
+            catch (ArgumentNullException)
+            {
+                return data;
+            }
+
+
         }
 
         public static void Log(string logMessage, TextWriter w)
@@ -384,5 +417,26 @@ namespace OneNotePageSearcher
         public PageMetaInfo(XElement node): base(node) { }
     }
 
-
+    public static class GlobalVar
+    {
+        public const string TreeViewMode = "tree";
+        public const string ListViewMode = "list";
+        public const string IndexByPageMode = "page";
+        public const string IndexByParagraphMode = "paragraph";
+    }
+    public class SearchResult
+    {
+        public string pageID;
+        public string paraID;
+        public string postBody;
+        public double score;
+        public string usefulContent;
+        public SearchResult(string pageID, string paraID, string postBody, double score)
+        {
+            this.pageID = pageID;
+            this.paraID = paraID;
+            this.postBody = postBody;
+            this.score = score;
+        }
+    }
 }
